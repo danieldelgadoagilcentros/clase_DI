@@ -79,7 +79,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:ems="10"
-        android:inputType="textPersonName"
+        android:inputType="phone"
         android:minHeight="48dp"
         android:text="666123456"
         app:layout_constraintEnd_toEndOf="parent"
@@ -124,4 +124,43 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/izda"
         app:layout_constraintTop_toBottomOf="@+id/telf" />
+
+    <Button
+        android:id="@+id/topDcha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:onClick="topDchaBtn"
+        android:text="&gt;&gt;"
+        app:layout_constraintBaseline_toBaselineOf="@+id/borrar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/borrar" />
+
+    <Button
+        android:id="@+id/topIzda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:onClick="topIzdaBtn"
+        android:text="&lt;&lt;"
+        app:layout_constraintBaseline_toBaselineOf="@+id/borrar"
+        app:layout_constraintEnd_toStartOf="@+id/borrar"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/borrar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Borrar"
+        android:onClick="borrarBtn"
+        app:layout_constraintEnd_toStartOf="@+id/topDcha"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/topIzda"
+        app:layout_constraintTop_toBottomOf="@+id/guardar" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
