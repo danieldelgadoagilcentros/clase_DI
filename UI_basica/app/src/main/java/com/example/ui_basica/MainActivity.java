@@ -5,11 +5,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.io.Serializable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -28,11 +34,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        listaAgenda = new LinkedList<>();
 
+        listaAgenda = cargarDeArchivo();
+/*
+        listaAgenda = new LinkedList<>();
         listaAgenda.add(new Persona("Ana", "Romero", "666666666"));
         listaAgenda.add(new Persona("Juan", "Ramero", "666666667"));
         listaAgenda.add(new Persona("Tolomeo", "Romerales", "675666666"));
+*/
         indice = listaAgenda.size();
 
 
@@ -53,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         apellido.addTextChangedListener(new myTextChangedListener());
         telefono.addTextChangedListener(new myTextChangedListener());
 
-        izda.OnLongClickListener(new myLongClickIzda());
 
         actualizaUI();
     }
@@ -74,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         izda.setEnabled(indice!=0);
         dcha.setEnabled(indice< listaAgenda.size());
         topIzda.setEnabled(indice!=0);
+        if(indice==listaAgenda.size()) guardar.setEnabled(true);
         topDcha.setEnabled(indice< listaAgenda.size());
         borrar.setEnabled(indice< listaAgenda.size());
 
@@ -117,6 +126,9 @@ public class MainActivity extends AppCompatActivity {
             listaAgenda.get(indice).apellido = String.valueOf(apellido.getText());
             listaAgenda.get(indice).telf = String.valueOf(telefono.getText());
         }
+        if(!guardarEnArchivo(listaAgenda)){
+            Log.e("Guardar-->", "Error al guardar" );
+        }
     }
 
     public void borrarBtn(View view) {
@@ -134,30 +146,6 @@ public class MainActivity extends AppCompatActivity {
     public void topDchaBtn(View view) {
         indice=listaAgenda.size();
         actualizaUI();
-    }
-
-    private class Persona implements java.io.Serializable{
-
-        public String nombre, apellido, telf;
-
-        public Persona(String nombre, String apellido, String telf){
-            this.nombre = nombre;
-            this.apellido = apellido;
-            this.telf = telf;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Persona persona = (Persona) o;
-            return nombre.equals(persona.nombre) && apellido.equals(persona.apellido) && telf.equals(persona.telf);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(nombre, apellido, telf);
-        }
     }
 
     private class myTextChangedListener implements TextWatcher{
@@ -184,9 +172,48 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class myLongClickIzda {
-        topI
+    private boolean guardarEnArchivo(List<Persona> listaAgenda){
+        FileOutputStream fos = null;
+        ObjectOutputStream out = null;
+        try {
+            //fos = new FileOutputStream(new File("./archivo.txt"));
+            fos = new FileOutputStream(new File(
+                    getExternalFilesDir(null),
+                    "archivo.txt"
+            ));
+            out = new ObjectOutputStream(fos);
+            out.writeObject(listaAgenda);
+
+            out.close();
+            fos.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+        return true;
     }
+
+    private List<Persona> cargarDeArchivo(){
+        List<Persona> devolver;
+
+        FileInputStream fis = null;
+        ObjectInputStream in = null;
+        try {
+            fis = new FileInputStream(new File(
+                    getExternalFilesDir(null),"archivo.txt"
+            ));
+            in = new ObjectInputStream(fis);
+            devolver = (LinkedList<Persona>) in.readObject();
+            in.close();
+            fis.close();
+        } catch (Exception ex) {
+            devolver = new LinkedList<Persona>();
+            ex.printStackTrace();
+        }
+
+        return devolver;
+    }
+
 }
 
 
